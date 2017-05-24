@@ -1,0 +1,21 @@
+{
+  "name": "correios",
+  "version": "0.2.2",
+  "description": "Rastreie objetos postados nos correios e seja alertado de mudanças no histórico da postagem",
+  "license": "MIT",
+  "repository": "https://github.com/vitorebatisa/rung-correios-extension.git",
+  "author": "Vitor Emanuel Batista <vitor.ebatista@gmail.com>",
+  "main": "index.js",
+  "dependencies": {
+    "ramda": "^0.23.0",
+    "rung-sdk": "^1.0.7",
+    "tracking-correios": "^1.1.0"
+  },
+  "rung": {
+    "title": "Rastreio de objetos nos correios",
+    "preview": "Guarda-roupa com status de \"Objeto encaminhado\" em São Paulo/SP"
+  },
+  "devDependencies": {
+    "rung-cli": "^0.4.1"
+  }
+}
