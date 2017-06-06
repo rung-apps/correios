@@ -1,7 +1,7 @@
 {
   "name": "correios",
-  "version": "0.2.2",
-  "description": "Rastreie objetos postados nos correios e seja alertado de mudanças no histórico da postagem",
+  "version": "0.2.6",
+  "description": "Trace objects posted at the post office and be alerted to changes in posting history",
   "license": "MIT",
   "repository": "https://github.com/vitorebatisa/rung-correios-extension.git",
   "author": "Vitor Emanuel Batista <vitor.ebatista@gmail.com>",
@@ -16,6 +16,6 @@
     "preview": "Guarda-roupa com status de \"Objeto encaminhado\" em São Paulo/SP"
   },
   "devDependencies": {
-    "rung-cli": "^0.4.1"
+    "rung-cli": "^0.4.3"
   }
 }

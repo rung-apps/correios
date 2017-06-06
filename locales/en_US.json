@@ -1,0 +1,8 @@
+{
+    "Enter the tracking code (Ex: AA123456789BR)": "Enter the tracking code (Ex: AA123456789BR)",
+    "Could you give me a brief description of the item? (Ex: Wardrobe)": "Could you give me a brief description of the item? (Ex: Wardrobe)",
+    "{{name}}, {{title}} with status \"{{description}}\" in {{date}} at {{time}} in the city of {{city}}/{{state}}": "{{name}}, {{title}} with status \"{{description}}\" in {{date}} at {{time}} in the city of {{city}}/{{state}}",
+    "{{name}} with status \"{{description}}\" in the city of {{city}}/{{state}}": "{{name}} with status \"{{description}}\" in the city of {{city}}/{{state}}",
+    "Tracking objects at the post office": "Tracking objects at the post office",
+    "Trace objects posted at the post office and be alerted to changes in posting history": "Trace objects posted at the post office and be alerted to changes in posting history"
+}

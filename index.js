@@ -20,11 +20,19 @@ function capitalize(string) {
 
 function renderContent(info, item) {
     const string = item === '' ? info.numero : item;
-    return `${capitalize(string)} com status "${info.evento[0].descricao}" em ${info.evento[0].cidade}/${info.evento[0].uf}`;
+    const [event] = info.evento;
+
+    return _('{{name}} with status "{{description}}" in the city of {{city}}/{{state}}', {
+        name: capitalize(string),
+        description: event.descricao,
+        city: event.cidade,
+        state: event.uf
+    });
 }
 
 function renderEvent(name, title, description, date, time, city, state) {
-    return `${name}, ${title} com status "${description}" em ${date} às ${time} na cidade de ${city}/${state}`;
+    return _('{{name}}, {{title}} with status "{{description}}" in {{date}} at {{time}} in the city of {{city}}/{{state}}',
+        { name, title, description, date, time, city, state });
 }
 
 function renderComment(info, title, updating) {
@@ -52,12 +60,12 @@ function main(context, done) {
 
 const params = {
     track: {
-        description: 'Informe o código de rastreamento (EX AA123456789BR)',
+        description: _('Enter the tracking code (Ex: AA123456789BR)'),
         type: Text,
-        default: ''
+        required: true
     },
     item: {
-        description: 'Você poderia me dar uma breve descrição do item? (EX Guarda-Roupa)',
+        description: _('Could you give me a brief description of the item? (Ex: Wardrobe)'),
         type: Text,
         default: ''
     }

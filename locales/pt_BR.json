@@ -1,0 +1,8 @@
+{
+    "Enter the tracking code (Ex: AA123456789BR)": "Informe o código de rastreamento (Ex AA123456789BR)",
+    "Could you give me a brief description of the item? (Ex: Wardrobe)": "Você poderia me dar uma breve descrição do item? (Ex: Guarda-Roupa)",
+    "{{name}}, {{title}} with status \"{{description}}\" in {{date}} at {{time}} in the city of {{city}}/{{state}}": "{{name}}, {{title}} com status \"{{description}}\" em {{date}} às {{time}} na cidade de {{city}}/{{state}}",
+    "{{name}} with status \"{{description}}\" in the city of {{city}}/{{state}}": "{{name}} com status \"{{description}}\" na cidade de {{city}}/{{state}}",
+    "Tracking objects at the post office": "Rastreio de objetos nos correios",
+    "Trace objects posted at the post office and be alerted to changes in posting history": "Rastreie objetos postados nos correios e seja alertado de mudanças no histórico da postagem"
+}
