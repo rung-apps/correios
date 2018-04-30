@@ -1,21 +1,16 @@
 {
   "name": "correios",
-  "version": "0.2.6",
-  "description": "Trace objects posted at the post office and be alerted to changes in posting history",
+  "version": "0.3.3",
   "license": "MIT",
-  "repository": "https://github.com/vitorebatisa/rung-correios-extension.git",
-  "author": "Vitor Emanuel Batista <vitor.ebatista@gmail.com>",
-  "main": "index.js",
+  "author": "Rung <suporte@rung.com.br>",
   "dependencies": {
+    "bluebird": "3.5.1",
+    "moment": "2.18.1",
     "ramda": "^0.23.0",
     "rung-sdk": "^1.0.7",
-    "tracking-correios": "^1.1.0"
-  },
-  "rung": {
-    "title": "Rastreio de objetos nos correios",
-    "preview": "Guarda-roupa com status de \"Objeto encaminhado\" em São Paulo/SP"
+    "tracking-correios": "1.1.5"
   },
   "devDependencies": {
-    "rung-cli": "^0.4.3"
+    "rung-cli": "1.3.1"
   }
 }

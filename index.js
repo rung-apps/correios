@@ -1,74 +1,137 @@
 import { create } from 'rung-sdk';
 import { String as Text } from 'rung-sdk/dist/types';
+import { reject } from 'bluebird';
 import TrackingCorreios from 'tracking-correios';
-import { map, mergeAll, join } from 'ramda';
+import {
+    adjust,
+    head,
+    find,
+    has,
+    isEmpty,
+    join,
+    last,
+    map,
+    mergeAll,
+    pipe,
+    toUpper,
+    unless
+} from 'ramda';
+import moment from 'moment';
 
-function createAlert(info, item, updating) {
-    const title = item === '' ? info.numero : `${item}, ${info.numero}`;
+const capitalize = unless(isEmpty, pipe(adjust(toUpper, 0), join('')));
+
+function softBody(lastEvent) {
+    const deliveredToTarget = lastEvent.descricao === 'Objeto entregue ao destinatário';
+    const daysFromNow = Math.abs(moment(`${lastEvent.data} ${lastEvent.hora}`, 'DD/MM/YYYY hh:mm')
+        .diff(new Date(), 'days'));
+
+    return daysFromNow >= 3 && !deliveredToTarget;
+}
+
+function createAlert(info, description) {
+    const doingSoftBody = softBody(head(info.evento));
+    const title = description.trim() === '' ? info.numero : `${description}, ${info.numero}`;
+
     return {
         [info.numero]: {
             title: capitalize(title),
-            content: renderContent(info, item),
-            comment: renderComment(info, title, updating)
+            content: render(info, description),
+            comment: renderComment(info, title),
+            resources: renderSoftBody(doingSoftBody)
         }
     };
 }
 
-function capitalize(string) {
-    return string[0].toUpperCase() + string.slice(1);
+function renderSoftBody(softBody) {
+    return softBody
+        ? ['https://i.imgur.com/goHE63x.jpg']
+        : [];
 }
 
-function renderContent(info, item) {
-    const string = item === '' ? info.numero : item;
+function render(info, description) {
+    const name = capitalize(description === '' ? info.numero : description);
     const [event] = info.evento;
 
     return _('{{name}} with status "{{description}}" in the city of {{city}}/{{state}}', {
-        name: capitalize(string),
+        name,
         description: event.descricao,
         city: event.cidade,
         state: event.uf
     });
 }
 
-function renderEvent(name, title, description, date, time, city, state) {
-    return _('{{name}}, {{title}} with status "{{description}}" in {{date}} at {{time}} in the city of {{city}}/{{state}}',
-        { name, title, description, date, time, city, state });
+function renderComment(info, title) {
+    const lastEvent = last(info.evento);
+
+    return _('{{name}}, {{title}} with status "{{description}}" in {{date}} at {{time}} in the city of {{city}}/{{state}}', {
+        title,
+        name: info.nome,
+        description: lastEvent.descricao,
+        date: lastEvent.data,
+        time: lastEvent.hora,
+        city: lastEvent.cidade,
+        state: lastEvent.uf
+    });
 }
 
-function renderComment(info, title, updating) {
-    return updating
-        ? renderEvent(info.nome, title, info.evento[0].descricao, info.evento[0].data, info.evento[0].hora, info.evento[0].cidade, info.evento[0].uf)
-        : join(' \n', map(event => renderEvent(info.nome, title, event.descricao, event.data, event.hora, event.cidade, event.uf), info.evento));
+class NotFoundError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = 'NotFoundError';
+    }
 }
 
-function main(context, done) {
-    const { track, item } = context.params;
-    const { db } = context;
-    const updating = db !== undefined;
+class InvalidCodeError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = 'InvalidCodeError';
+    }
+}
+
+function main(context) {
+    const { code, description } = context.params;
 
     return TrackingCorreios
-        .track(track)
+        .track(code)
         .then(body => {
-            const alerts = mergeAll(map(info => createAlert(info, item, updating), body));
-            done({
-                alerts,
-                db: { updating: true }
-            });
+            const error = find(has('erro'), body);
+
+            if (error) {
+                return reject(new NotFoundError(_('Object not found in the Correios database')));
+            }
+
+            const alerts = mergeAll(map(info => createAlert(info, description), body));
+
+            return ({ alerts });
         })
-        .catch(() => done({ alerts: {}, db }));
+        .catch({ name: 'TrackingError' }, err => err.type === 'validation_error'
+            ? reject(new InvalidCodeError(_('Invalid tracking code')))
+            : reject());
 }
 
 const params = {
-    track: {
+    code: {
         description: _('Enter the tracking code (Ex: AA123456789BR)'),
         type: Text,
         required: true
     },
-    item: {
+    description: {
         description: _('Could you give me a brief description of the item? (Ex: Wardrobe)'),
         type: Text,
         default: ''
     }
 };
 
-export default create(main, { params, primaryKey: true });
+export default create(main, {
+    params,
+    primaryKey: true,
+    title: _('Tracking objects on Correios'),
+    description: _('Be informed about every move of your order and be aware of possible delivery problems.'),
+    preview: render({
+        numero: 'PL610951449BR',
+        evento: [{
+            descricao: 'Objeto entregue ao destinatário',
+            cidade: 'São Paulo',
+            uf: 'SP'
+        }] }, 'Bicicleta')
+});
